@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload - RAG Chatbot</title>
+    <style>
+        body { font-family: Arial; max-width: 600px; margin: 50px auto; }
+        form { display: flex; flex-direction: column; }
+        input, button { padding: 10px; margin: 5px 0; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .document-list { margin-top: 30px; }
+        .document-item { padding: 10px; margin: 5px 0; background: #f5f5f5; border-radius: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .delete-btn { background-color: #dc3545; padding: 5px 10px; font-size: 12px; }
+        .delete-btn:hover { background-color: #c82333; }
+        a { color: #007bff; text-decoration: none; margin: 10px 5px; }
+    </style>
+</head>
+<body>
+    <h2>Upload Document</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+    <a href="{% url 'chatbot:chat' %}">Back to Chat</a>
+    
+    <div class="document-list">
+        <h3>Your Documents</h3>
+        {% if documents %}
+            {% for doc in documents %}
+                <div class="document-item">
+                    <span>{{ doc.filename }} {% if doc.processed %}<strong>(Processed)</strong>{% endif %}</span>
+                    <form method="post" action="{% url 'chatbot:delete_document' doc.id %}" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No documents uploaded yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

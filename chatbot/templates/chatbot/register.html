@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - RAG Chatbot</title>
+    <style>
+        body { font-family: Arial; max-width: 400px; margin: 50px auto; }
+        form { display: flex; flex-direction: column; }
+        input, button { padding: 10px; margin: 5px 0; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .error { color: red; }
+        a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h2>Register</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'chatbot:login' %}">Login here</a></p>
+</body>
+</html>
