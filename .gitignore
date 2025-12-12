@@ -23,7 +23,7 @@ staticfiles/
 
 # ChromaDB
 docs/chroma/
-chroma_db\1
+chroma_db\
 
 # UV
 .uv/
