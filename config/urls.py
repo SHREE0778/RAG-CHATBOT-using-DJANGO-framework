@@ -7,6 +7,6 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', RedirectView.as_view(url='chatbot/', permanent=False)),
+    path('', RedirectView.as_view(url='accounts/login/', permanent=False)),
     path('chatbot/', include('chatbot.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

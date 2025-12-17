@@ -143,3 +143,5 @@ if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
+    LOGIN_REDIRECT_URL = '/chatbot/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
