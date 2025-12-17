@@ -11,12 +11,22 @@ from .services.vector_store import VectorStoreService
 from .services.llm_service import LLMService
 from .services.document_processor import DocumentProcessor
 import logging
+from chatbot.services.embeddings import EmbeddingService
+
+embedding_service = EmbeddingService()
+from chatbot.services.llm_service import LLMService
+
+_llm_service = None
+
+def get_llm_service():
+    global _llm_service
+    if _llm_service is None:
+        _llm_service = LLMService()
+    return _llm_service
+
 
 logger = logging.getLogger(__name__)
 
-# Initialize services (singleton pattern for embeddings)
-embedding_service = EmbeddingService()
-llm_service = LLMService()
 
 def register(request):
     """User registration view"""
@@ -77,7 +87,7 @@ def send_message(request):
             chat_history.append({"role": "assistant", "content": msg.response})
         
         # Generate response
-        response = llm_service.generate_response(query, context, chat_history)
+        response = get_llm_service().generate_response(query, context, chat_history)
         
         # Save to database
         ChatMessage.objects.create(
