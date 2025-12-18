@@ -100,9 +100,12 @@ from pathlib import Path
 CHROMA_PERSIST_DIRECTORY = BASE_DIR / 'docs' / 'chroma'
 CHROMA_PERSIST_DIRECTORY.mkdir(parents=True, exist_ok=True)
 
-GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY', os.getenv('GROQ_API_KEY', ''))
 LLM_MODEL = os.getenv('LLM_MODEL', 'llama-3.1-8b-instant')
 EMBEDDING_MODEL = 'all-MiniLM-L6-v2'
+# Force CPU usage for embeddings (important for deployment)
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+os.environ['OMP_NUM_THREADS'] = '2'
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
 
@@ -123,12 +126,22 @@ import dj_database_url
 ALLOWED_HOSTS = ['*','.railway.app']
 
 # Database - Use PostgreSQL in production
+# Database - Use PostgreSQL in production, SQLite in development
 if not DEBUG:
-    DATABASES['default'] = dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Static files
 STATIC_URL = '/static/'
@@ -147,5 +160,7 @@ if not DEBUG:
    
    
 # Authentication redirects
-LOGIN_REDIRECT_URLL = '/chatbot/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGIN_URL = '/login/'
+LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+

@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: rag-chatbot
+    env: python
+    region: oregon
+    plan: free
+    branch: groq-env
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 config.wsgi:application
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
