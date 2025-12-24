@@ -30,6 +30,6 @@ EXPOSE 8000
 
 # Start command
 CMD python manage.py migrate && \
-    gunicorn config.wsgi --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    gunicorn config.wsgi --bind 0.0.0.0:$PORT --workers 1 --timeout 120
 
 

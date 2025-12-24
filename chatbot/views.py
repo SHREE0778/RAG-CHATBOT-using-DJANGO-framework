@@ -13,10 +13,17 @@ from .services.document_processor import DocumentProcessor
 import logging
 from chatbot.services.embeddings import EmbeddingService
 
-embedding_service = EmbeddingService()
+# embedding_service = EmbeddingService()  <-- MOVED TO LAZY LOADER
 from chatbot.services.llm_service import LLMService
 
 _llm_service = None
+_embedding_service = None  # Lazy load singleton
+
+def get_embedding_service():
+    global _embedding_service
+    if _embedding_service is None:
+        _embedding_service = EmbeddingService()
+    return _embedding_service
 
 def get_llm_service():
     global _llm_service
@@ -68,7 +75,7 @@ def send_message(request):
         vector_store = VectorStoreService(request.user.id)
         
         # Generate query embedding
-        query_embedding = embedding_service.generate_embedding(query)
+        query_embedding = get_embedding_service().generate_embedding(query)
         
         # Search for relevant documents
         search_results = vector_store.search(query_embedding, n_results=3)
@@ -135,7 +142,7 @@ def upload_document(request):
                 chunks = processor.chunk_text(text)
                 
                 # Generate embeddings
-                embeddings = embedding_service.generate_embeddings(chunks)
+                embeddings = get_embedding_service().generate_embeddings(chunks)
                 
                 # Store in vector database
                 vector_store = VectorStoreService(request.user.id)
