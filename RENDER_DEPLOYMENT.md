@@ -45,23 +45,35 @@ Scroll down to the **Environment Variables** section and add the following:
 | `SECRET_KEY` | *(Generate a random string)* |
 | `DEBUG` | `False` |
 | `GROQ_API_KEY` | `your_actual_groq_api_key_here` |
-| `Forb_Use_Sqlite` | `True` (Optional: If you want to use SQLite on disk, warning: data is ephemeral on free tier)* |
 
-> **Note on Database**: Render Free Tier Web Services have **ephemeral files**. This means your SQLite database will reset every time the app restarts.
-> For a persistent database, you should create a **Render PostgreSQL** database (also has a free tier) and copy the `Internal DB URL` to a `DATABASE_URL` environment variable.
+## Step 4: Set up Free PostgreSQL (Recommended)
 
-## Step 4: Deploy
+Since the free tier web service has ephemeral storage (data is lost on restart), you should use a separate database.
 
-1.  Click **Create Web Service**.
+1.  Go back to the [Render Dashboard](https://dashboard.render.com/).
+2.  Click **New +** -> **PostgreSQL**.
+3.  **Name**: `rag-chatbot-db`
+4.  **Instance Type**: **Free**
+5.  Click **Create Database**.
+6.  Wait for it to become "Available".
+7.  Copy the **Internal DB URL** (it looks like `postgres://rag_chatbot_user:password@hostname/rag_chatbot`).
+8.  Go back to your **Web Service** -> **Environment**.
+9.  Add a new variable:
+    *   **Key**: `DATABASE_URL`
+    *   **Value**: *(Paste the Internal DB URL)*
+
+## Step 5: Deploy
+
+1.  Click **Create Web Service** (or **Manual Deploy** if you already created it).
 2.  Watch the logs. It will install dependencies, collect static files, and migrate the database.
 3.  Once it says "Live", click the URL at the top (e.g., `https://rag-chatbot-xxxx.onrender.com`).
 
 ## ⚠️ Important Notes for Free Tier
 
 1.  **Spin Down**: Free web services verify spin down after 15 minutes of inactivity. The first request after that will take significantly longer (30s+).
-2.  **Ephemeral Files**: Any uploaded files (PDFs) or SQLite database changes will be **lost** when the app restarts or spins down.
-    *   **Solution**: Use a persistent Postgres DB for chat history.
-    *   **Solution**: Since we removed Firebase Storage, file uploads effectively rely on the local disk. They will disappear on restart. For a production app, you would need AWS S3 or similar.
+2.  **Ephemeral Files**: Any uploaded files (PDFs) will still be lost on restart because we are saving them to the local filesystem.
+    *   **Workaround**: Upload files again if they are missing, or upgrade to a plan that supports persistent disks (or use AWS S3).
+    *   **Database Data**: Chat history and user accounts **WILL** be saved now that you are using Postgres.
 
 ## Troubleshooting
 
