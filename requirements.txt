@@ -14,12 +14,9 @@ groq==0.37.1
 # ChromaDB - lightweight version
 chromadb==0.4.22
 
-# Embeddings - optimized for CPU
-sentence-transformers==2.2.2
-# CPU-only PyTorch (saves 1.7GB in Docker image!)
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.0.0+cpu
-huggingface-hub==0.16.4
+# Embeddings
+# sentence-transformers removed for API usage
+# torch removed for API usage
 
 
 # Document Processing
@@ -32,4 +29,5 @@ python-dotenv==1.2.1
 # Essential only
 pydantic==2.5.0
 httpx==0.25.0
+requests==2.31.0
 numpy==1.24.3
