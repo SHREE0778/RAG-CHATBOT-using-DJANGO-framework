@@ -146,6 +146,9 @@ def upload_document(request):
                 # Generate embeddings
                 embeddings = get_embedding_service().generate_embeddings(chunks)
                 
+                if not embeddings:
+                    raise Exception("Failed to generate embeddings. Please check if HF_TOKEN is set in Render Environment Variables.")
+                
                 # Store in vector database
                 vector_store = VectorStoreService(request.user.id)
                 metadatas = [{'filename': file.name, 'doc_id': doc.id}] * len(chunks)
