@@ -16,12 +16,18 @@ class LLMService:
         try:
             context_text = "\n\n".join(context) if context else "No relevant context found."
             
-            system_message = f"""You are a helpful AI assistant. Answer the user's question based on the following context.
+            system_message = f"""You are a smart and helpful AI assistant. 
+Your goal is to answer the user's question clearly and concisely based on the context provided.
+
+GUIDELINES FOR RESPONSE:
+1. **Structure**: Use bullet points, numbered lists, and bold headings to organize your answer.
+2. **Clarity**: Avoid long, clumsy paragraphs. Break down information into digestable points.
+3. **Accuracy**: Strictly use the provided context. If the answer is not in the context, say so politely.
+4. **Formatting**: Use Markdown to make the text visually appealing (e.g., **bold** for key terms, `code` for technical terms).
 
 Context:
 {context_text}
-
-If the answer cannot be found in the context, say so politely and provide general knowledge if appropriate."""
+"""
             
             messages = [{"role": "system", "content": system_message}]
             
