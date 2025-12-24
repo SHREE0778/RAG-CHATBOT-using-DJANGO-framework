@@ -16,13 +16,14 @@ class EmbeddingService:
         """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.api_url = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2"
+            # Using BAAI/bge-small-en-v1.5 as it defaults correctly to feature-extraction
+            cls._instance.api_url = "https://router.huggingface.co/hf-inference/models/BAAI/bge-small-en-v1.5"
             cls._instance.api_token = os.environ.get('HF_TOKEN')
             
             if not cls._instance.api_token:
                 logger.warning("⚠️ HF_TOKEN not found! Embedding service will fail unless token is provided.")
             
-            logger.info(f"✅ Embedding API Service initialized (Model: all-MiniLM-L6-v2)")
+            logger.info(f"✅ Embedding API Service initialized (Model: BAAI/bge-small-en-v1.5)")
         
         return cls._instance
     
@@ -80,6 +81,6 @@ class EmbeddingService:
 
     def get_model_info(self):
         return {
-            'model_name': 'all-MiniLM-L6-v2 (API)',
+            'model_name': 'BAAI/bge-small-en-v1.5 (API)',
             'mode': 'Refactored for 512MB RAM'
         }

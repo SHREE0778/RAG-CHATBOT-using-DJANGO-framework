@@ -159,5 +159,5 @@ if not DEBUG:
 
 # Authentication redirects
 LOGIN_URL = 'chatbot:login'
-LOGOUT_REDIRECT_URL = 'index' 
+LOGOUT_REDIRECT_URL = 'chatbot:login' 
 LOGIN_REDIRECT_URL = 'chatbot:chat'
