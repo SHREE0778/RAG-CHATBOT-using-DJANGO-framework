@@ -16,7 +16,7 @@ class EmbeddingService:
         """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
-            cls._instance.api_url = "https://router.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
+            cls._instance.api_url = "https://router.huggingface.co/hf-inference/models/sentence-transformers/all-MiniLM-L6-v2"
             cls._instance.api_token = os.environ.get('HF_TOKEN')
             
             if not cls._instance.api_token:
