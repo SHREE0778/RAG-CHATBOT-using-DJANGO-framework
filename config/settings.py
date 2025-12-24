@@ -11,12 +11,8 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-change-this-in-prod
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 
-from sentence_transformers import SentenceTransformer
+# Embedding and LLM services are handled in chatbot/services/
 
-def load_embedder():
-    return SentenceTransformer(
-        "all-MiniLM-L6-v2",
-    )
 
 ALLOWED_HOSTS = ['*']
 
