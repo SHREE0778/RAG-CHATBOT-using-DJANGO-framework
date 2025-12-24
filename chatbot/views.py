@@ -11,7 +11,7 @@ from .services.vector_store import VectorStoreService
 from .services.llm_service import LLMService
 from .services.document_processor import DocumentProcessor
 import logging
-from chatbot.services.embeddings import EmbeddingService
+# from chatbot.services.embeddings import EmbeddingService  <-- REMOVED
 
 # embedding_service = EmbeddingService()  <-- MOVED TO LAZY LOADER
 from chatbot.services.llm_service import LLMService
@@ -22,6 +22,8 @@ _embedding_service = None  # Lazy load singleton
 def get_embedding_service():
     global _embedding_service
     if _embedding_service is None:
+        # Import here to avoid loading torch at startup
+        from chatbot.services.embeddings import EmbeddingService
         _embedding_service = EmbeddingService()
     return _embedding_service
 

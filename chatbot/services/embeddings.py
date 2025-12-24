@@ -1,8 +1,6 @@
-from sentence_transformers import SentenceTransformer
 from typing import List
 import logging
 import os
-import torch
 
 logger = logging.getLogger(__name__)
 
@@ -15,6 +13,10 @@ class EmbeddingService:
         Optimized for deployment with CPU-only usage.
         """
         if cls._instance is None:
+            # Lazy load heavy dependencies
+            import torch
+            from sentence_transformers import SentenceTransformer
+
             # Get model name from environment or use default
             if model_name is None:
                 model_name = os.environ.get('EMBEDDING_MODEL', 'paraphrase-MiniLM-L3-v2')
