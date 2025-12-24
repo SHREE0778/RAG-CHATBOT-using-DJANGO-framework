@@ -11,13 +11,16 @@ psycopg2-binary==2.9.11
 # Groq API
 groq==0.37.1
 
-# ChromaDB (lightweight version)
+# ChromaDB - lightweight version
 chromadb==0.4.22
 
-# Embeddings - sentence-transformers with minimal dependencies
+# Embeddings - optimized for CPU
 sentence-transformers==2.2.2
-torch==2.1.0
-transformers==4.35.0
+# CPU-only PyTorch (saves 1.7GB in Docker image!)
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.0.0+cpu
+huggingface-hub==0.16.4
+
 
 # Document Processing
 pypdf==6.4.1
@@ -25,7 +28,6 @@ pillow==12.0.0
 
 # Utilities
 python-dotenv==1.2.1
-redis==7.1.0
 
 # Essential only
 pydantic==2.5.0
