@@ -120,15 +120,12 @@ os.environ['OMP_NUM_THREADS'] = '2'
 
 # PRODUCTION SETTINGS
 # ============================================
-# PRODUCTION SETTINGS
-# ============================================
 
 import dj_database_url
 
-# Allow Railway domain
-ALLOWED_HOSTS = ['*','.railway.app']
+# Allow Render and other domains
+ALLOWED_HOSTS = ['*']
 
-# Database - Use PostgreSQL in production
 # Database - Use PostgreSQL in production, SQLite in development
 if not DEBUG:
     DATABASES = {
@@ -146,7 +143,6 @@ else:
         }
     }
 
-# Static files
 # Static files configuration
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
@@ -155,19 +151,17 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] if os.path.exists(os.path.
 # WhiteNoise configuration for static files
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# WhiteNoise - Serve static files
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-
 # Security settings for production
 if not DEBUG:
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
-   
-   
-   
-# Authentication redirects
-LOGIN_URL = '/login/'
-LOGOUT_REDIRECT_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+    CSRF_TRUSTED_ORIGINS = [
+        "https://*.onrender.com",
+        "https://*.railway.app"
+    ]
 
+# Authentication redirects
+LOGIN_URL = 'chatbot:login'
+LOGOUT_REDIRECT_URL = 'index' 
+LOGIN_REDIRECT_URL = 'chatbot:chat'
