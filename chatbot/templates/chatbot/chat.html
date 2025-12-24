@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,7 +58,7 @@
             gap: 12px;
         }
 
-        
+
         .header-right {
             display: flex;
             gap: 12px;
@@ -141,6 +142,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -388,6 +390,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="app-container">
         <!-- Header -->
@@ -400,13 +403,14 @@
                 <form method="post" action="{% url 'chatbot:clear_history' %}" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit" class="header-btn">🗑️ Clear</button>
-              </form>
-<form method="post" action="{% url 'chatbot:logout' %}" style="display:inline; margin:0;">
-    {% csrf_token %}
-    <button type="submit" class="header-btn" style="border:none; background:transparent; cursor:pointer; padding:0; font:inherit; color:inherit;">
-        🚪 Logout
-    </button>
-</form>
+                </form>
+                <form method="post" action="{% url 'chatbot:logout' %}" style="display:inline; margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" class="header-btn"
+                        style="border:none; background:transparent; cursor:pointer; padding:0; font:inherit; color:inherit;">
+                        🚪 Logout
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -416,20 +420,20 @@
             <div class="chat-section">
                 <div class="messages-container" id="messages">
                     {% if messages %}
-                        {% for msg in messages %}
-                            <div class="message user">
-                                <div class="message-content">{{ msg.message }}</div>
-                            </div>
-                            <div class="message assistant">
-                                <div class="message-content">{{ msg.response }}</div>
-                            </div>
-                        {% endfor %}
+                    {% for msg in messages %}
+                    <div class="message user">
+                        <div class="message-content">{{ msg.message }}</div>
+                    </div>
+                    <div class="message assistant">
+                        <div class="message-content">{{ msg.response }}</div>
+                    </div>
+                    {% endfor %}
                     {% else %}
-                        <div class="empty-state">
-                            <div class="empty-icon">💬</div>
-                            <p>No messages yet</p>
-                            <p style="font-size: 12px; margin-top: 4px;">Start a conversation to get started</p>
-                        </div>
+                    <div class="empty-state">
+                        <div class="empty-icon">💬</div>
+                        <p>No messages yet</p>
+                        <p style="font-size: 12px; margin-top: 4px;">Start a conversation to get started</p>
+                    </div>
                     {% endif %}
                 </div>
 
@@ -450,17 +454,17 @@
                 <div class="sidebar-header">📄 Documents</div>
                 <div class="sidebar-content">
                     {% if has_documents %}
-                        {% for doc in documents %}
-                            <div class="document-item">
-                                <span class="doc-name" title="{{ doc.filename }}">{{ doc.filename }}</span>
-                                <form method="post" action="{% url 'chatbot:delete_document' doc.id %}" style="margin: 0;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="delete-btn">✕</button>
-                                </form>
-                            </div>
-                        {% endfor %}
+                    {% for doc in documents %}
+                    <div class="document-item">
+                        <span class="doc-name" title="{{ doc.filename }}">{{ doc.filename }}</span>
+                        <form method="post" action="{% url 'chatbot:delete_document' doc.id %}" style="margin: 0;">
+                            {% csrf_token %}
+                            <button type="submit" class="delete-btn">✕</button>
+                        </form>
+                    </div>
+                    {% endfor %}
                     {% else %}
-                        <div class="empty-docs">No documents uploaded</div>
+                    <div class="empty-docs">No documents uploaded</div>
                     {% endif %}
                 </div>
                 <div class="sidebar-footer">
@@ -470,16 +474,76 @@
         </div>
     </div>
 
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* Markdown Styles */
+        .message-content ul,
+        .message-content ol {
+            margin-left: 20px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .message-content p {
+            margin-bottom: 8px;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-content strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .message-content code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .message-content pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 8px 0;
+        }
+    </style>
+
     <script>
+        // Configure marked
+        marked.setOptions({
+            breaks: true, // Enable line breaks
+            gfm: true     // Enable GitHub Flavored Markdown
+        });
+
+        // Function to render markdown safely
+        function renderMarkdown(text) {
+            return marked.parse(text);
+        }
+
+        // Render existing messages on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const assistantMessages = document.querySelectorAll('.message.assistant .message-content');
+            assistantMessages.forEach(msg => {
+                // Determine if it looks like markdown (simple heuristic) or just render everything
+                msg.innerHTML = renderMarkdown(msg.innerText);
+            });
+        });
+
         document.getElementById('messageForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const message = document.getElementById('messageInput').value.trim();
-            
+
             if (!message) return;
 
             const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
             const messagesContainer = document.getElementById('messages');
-            
+
             // Remove empty state if exists
             const emptyState = messagesContainer.querySelector('.empty-state');
             if (emptyState) emptyState.remove();
@@ -506,12 +570,13 @@
             try {
                 const response = await fetch("{% url 'chatbot:send_message' %}", {
                     method: 'POST',
-                    headers: {'X-CSRFToken': csrftoken},
+                    headers: { 'X-CSRFToken': csrftoken },
                     body: formData
                 });
 
                 const data = await response.json();
-                loadingDiv.innerHTML = `<div class="message-content">${escapeHtml(data.response)}</div>`;
+                // Render Markdown response
+                loadingDiv.innerHTML = `<div class="message-content">${renderMarkdown(data.response)}</div>`;
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             } catch (error) {
                 loadingDiv.innerHTML = `<div class="message-content" style="color: #fca5a5;">Error: Failed to get response</div>`;
@@ -525,4 +590,5 @@
         }
     </script>
 </body>
+
 </html>
